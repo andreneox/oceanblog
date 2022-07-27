@@ -1,0 +1,52 @@
+html {
+
+font-family: sans-serif;
+background-color: rgb(202, 187, 187);
+padding: 1rem;
+
+
+}
+
+body {
+
+    max-width: 960px;
+    margin: 0 auto;
+    background: white;
+
+}
+h1 {
+
+    font-family: serif;
+    color: rgb(73, 73, 224);
+    margin: 1rem auto;
+
+}
+hr {
+
+        border: none;
+        border-top: 1px solid lightgray;
+
+}
+.content {
+
+    padding: 0 1rem 1rem ;
+
+}
+.post > header > div:first-of-type {
+
+    flex: auto;
+
+}
+.post .about {
+
+    color: slategrey;
+    font-style: italic;
+
+
+}
+.post .body {
+
+    white-space: pre-line;
+
+
+}
