@@ -34,3 +34,17 @@ hr{
     font-style: italic;
     color: gray;
 }
+.content form {
+    margin: 1em auto;
+    max-width: 40%;
+    display: flex;
+    flex-direction: column;
+}
+.content label {
+    font-weight: bold;
+    margin-bottom: 0.7 em;
+}
+.content input {
+    margin-bottom: 1em;
+
+}
