@@ -1,12 +1,14 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, current_user, logout_user, login_user
+from flask_login import LoginManager, UserMixin, current_user, logout_user, login_user, login_required
 from werkzeug.security  import check_password_hash, generate_password_hash
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError   
+import os 
 
 app = Flask("blog")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+db_url = os.environ.get('DATABASE_URL') or "sqlite:///app.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url.replace('postgres', 'postgresql')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "andre"
 
@@ -69,7 +71,7 @@ def register():
 
     return render_template('register.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -77,7 +79,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user is None or user.check_password(password):
+        if user is None or not user.check_password(password):
             flash("Username or password is incorrect!")
             return redirect (url_for('login'))
         login_user(user)
@@ -89,3 +91,20 @@ def login():
 def logout():
     logout_user()
     return redirect (url_for('index'))
+
+@app.route('/create', methods=['GET', 'POST'])
+@login_required
+def create():
+    if request.method == "POST":
+        title = request.form['title']
+        body = request.form['body']
+        try:
+            post = Post (title=title, body=body, author=current_user)
+            db.session.add(post)
+            db.session.commit()
+            return redirect (url_for('index'))
+        except IntegrityError:
+            flash("Error on Create Post, Try Again")
+
+    return render_template('create.html')
+    
